@@ -1,0 +1,30 @@
+{
+  "name": "yishu-home",
+  "type": "module",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Academic Personal Homepage of Yishu Liu (刘一树) - Computational Biology & AI for Science",
+  "scripts": {
+    "dev": "astro dev",
+    "start": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "astro": "astro"
+  },
+  "dependencies": {
+    "@tailwindcss/vite": "^4.0.9",
+    "@tweakpane/plugin-essentials": "^0.2.1",
+    "astro": "^5.4.0",
+    "lucide": "^1.64.0",
+    "lucide-astro": "^0.556.0",
+    "tailwindcss": "^4.0.9",
+    "three": "^0.187.0",
+    "tweakpane": "^4.0.5"
+  },
+  "devDependencies": {
+    "@tweakpane/core": "^2.0.5",
+    "@types/node": "^22.13.0",
+    "@types/three": "^0.186.0",
+    "typescript": "^5.7.3"
+  }
+}

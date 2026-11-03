@@ -1,0 +1,59 @@
+---
+import Sprite from './Sprite.astro';
+---
+
+<!-- Stardew-style HUD: clock + gold (top right), energy bar (bottom right). -->
+<div id="sv-hud" class="fixed right-3 top-[68px] z-20 flex flex-col items-end gap-2 select-none" aria-hidden="true">
+  <div class="sv-hud-box hidden lg:block w-[150px] p-2">
+    <div class="flex items-center justify-between pixel-12">
+      <span id="hud-date">Spring 1</span>
+    </div>
+    <div class="relative h-[18px] my-1.5 mx-[8px] bg-[#4a2a14]">
+      <span id="hud-sun" class="absolute top-1/2 left-0 leading-none"><Sprite name="sun" scale={1.5} /></span>
+    </div>
+    <div id="hud-time" class="pixel-12 text-right">6:00 am</div>
+  </div>
+</div>
+<div class="fixed right-3 bottom-4 z-20 select-none hidden sm:flex flex-col items-center gap-1" aria-hidden="true">
+  <div class="sv-hud-box w-6 h-[110px] p-1 flex items-end">
+    <div id="hud-energy" class="w-full" style="height:100%;background:#5fa937;"></div>
+  </div>
+  <span class="pixel-12 text-[#fff6dc] [text-shadow:1px_1px_0_#3d1f0b]">E</span>
+</div>
+
+<script>
+  // Clock / date from the visitor's real local time, mapped onto Stardew's seasons.
+  const SEASONS = ['Winter', 'Winter', 'Spring', 'Spring', 'Spring', 'Summer', 'Summer', 'Summer', 'Fall', 'Fall', 'Fall', 'Winter'];
+  const DAYS = ['Sun.', 'Mon.', 'Tue.', 'Wed.', 'Thu.', 'Fri.', 'Sat.'];
+  const dateEl = document.getElementById('hud-date')!;
+  const timeEl = document.getElementById('hud-time')!;
+  const sunEl = document.getElementById('hud-sun')!;
+  const tick = () => {
+    const d = new Date();
+    dateEl.textContent = `${DAYS[d.getDay()]} ${SEASONS[d.getMonth()]} ${d.getDate()}`;
+    const h = d.getHours();
+    const m = String(d.getMinutes()).padStart(2, '0');
+    timeEl.textContent = `${h % 12 || 12}:${m} ${h < 12 ? 'am' : 'pm'}`;
+    // Daylight span 6:00 → 20:00 maps onto the bar; outside it the sun rests at the ends, dimmed.
+    const hours = h + d.getMinutes() / 60;
+    const t = Math.min(1, Math.max(0, (hours - 6) / 14));
+    sunEl.style.left = `${t * 100}%`;
+    sunEl.style.transform = 'translate(-50%, -50%)';
+    sunEl.style.opacity = hours >= 6 && hours <= 20 ? '1' : '0.45';
+  };
+  tick();
+  setInterval(tick, 30_000);
+
+  // Energy = how much of the page is left to read.
+  const energy = document.getElementById('hud-energy')!;
+  const onScroll = () => {
+    const max = document.documentElement.scrollHeight - innerHeight;
+    const used = max > 0 ? Math.min(1, scrollY / max) : 0;
+    const left = Math.max(0.06, 1 - used);
+    energy.style.height = `${Math.round(left * 22) * (100 / 22)}%`; // stepped like pixels
+    energy.style.background = left > 0.5 ? '#5fa937' : left > 0.25 ? '#e8b02f' : '#d4421a';
+  };
+  onScroll();
+  addEventListener('scroll', onScroll, { passive: true });
+  addEventListener('resize', onScroll);
+</script>

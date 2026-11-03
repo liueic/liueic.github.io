@@ -1,0 +1,121 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { siteData } from '../../data/cv';
+
+const { researchNotes } = siteData;
+---
+
+<BaseLayout
+  title="科研与工程笔记 · Research Notes | 刘一树 (Yishu Liu)"
+  description="Research notes and engineering write-ups on Computational Biology, Nextflow/SLURM HPC, and Scientific LLM Agents."
+>
+  <section class="pb-8 border-b border-[#d4a75f]">
+    <div class="mb-4">
+      <a href="/" class="text-xs font-medium text-[#8a5a2b] hover:text-[#4a2a14] transition-colors">
+        ← <span data-i18n="zh">返回个人主页</span><span data-i18n="en">Back to Academic Profile</span>
+      </a>
+    </div>
+
+    <h1 class="text-2xl sm:text-3xl tracking-tight text-[#4a2a14]">
+      <span data-i18n="zh">科研与工程笔记 · Notes</span>
+      <span data-i18n="en">Research & Engineering Notes</span>
+    </h1>
+    <p class="text-sm text-[#6b4423] mt-2 max-w-2xl text-pretty leading-relaxed">
+      <span data-i18n="zh">记录生物信息高通量流程（Nextflow / SLURM）、分子对接计算优化与科学智能体（MCP / LLM Agents）架构实践。</span>
+      <span data-i18n="en">Technical notes on high-throughput bioinformatics workflows (Nextflow / SLURM), molecular docking optimization, and Scientific LLM Agent infrastructure.</span>
+    </p>
+
+    <div class="mt-6 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
+      <div class="academic-search-box w-full sm:max-w-sm">
+        <svg class="w-4 h-4 text-[#8a5a2b] shrink-0 mr-2" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
+        </svg>
+        <input
+          id="notes-search-input"
+          type="text"
+          placeholder="Search notes (e.g. Nextflow, SLURM, MCP)..."
+          class="w-full text-xs sm:text-sm bg-transparent text-[#4a2a14] placeholder-[#8a5a2b] focus:outline-none"
+        />
+      </div>
+    </div>
+  </section>
+
+  <section class="py-8">
+    <div id="notes-list" class="divide-y divide-[#d4a75f]">
+      {researchNotes.map((note) => (
+        <article
+          class="note-item py-6 first:pt-0 last:pb-0 grid grid-cols-1 sm:grid-cols-[180px_1fr] gap-3 sm:gap-6"
+          data-search-text={`${note.title.zh} ${note.title.en} ${note.excerpt.zh} ${note.excerpt.en} ${note.tags.join(' ')}`.toLowerCase()}
+        >
+          <div class="font-mono text-xs text-[#8a5a2b] space-y-1 pt-0.5">
+            <div class="text-[#4a2a14] font-medium">{note.date}</div>
+            <div>
+              <span data-i18n="zh">{note.readingTime.zh}</span>
+              <span data-i18n="en">{note.readingTime.en}</span>
+            </div>
+          </div>
+
+          <div class="space-y-2">
+            <h2 class="text-base sm:text-lg text-[#4a2a14] leading-snug">
+              <a href={`/notes/${note.slug}`} class="hover:underline underline-offset-4">
+                <span data-i18n="zh">{note.title.zh}</span>
+                <span data-i18n="en">{note.title.en}</span>
+              </a>
+            </h2>
+
+            <p class="text-sm text-[#6b4423] leading-relaxed text-pretty">
+              <span data-i18n="zh">{note.excerpt.zh}</span>
+              <span data-i18n="en">{note.excerpt.en}</span>
+            </p>
+
+            <div class="flex flex-wrap items-center gap-1.5 pt-1">
+              {note.tags.map((tag) => (
+                <span class="academic-tag font-mono text-[11px]">{tag}</span>
+              ))}
+            </div>
+          </div>
+        </article>
+      ))}
+    </div>
+
+    <div id="notes-empty-state" class="hidden py-14 text-center">
+      <div class="mx-auto w-24 h-24 mb-3 flex items-center justify-center bg-[#f6e0a4] border border-[#d4a75f]">
+        <svg class="w-12 h-12 text-[#a47a45]" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="16" y="12" width="32" height="40" stroke="#8a5a2b" />
+          <path d="M24 24h16M24 32h12M24 40h8" stroke="#4a2a14" stroke-linecap="round" />
+        </svg>
+      </div>
+      <p class="text-sm font-medium text-[#4a2a14]">
+        <span data-i18n="zh">没有找到匹配的科研笔记</span>
+        <span data-i18n="en">No matching research notes found</span>
+      </p>
+      <p class="text-xs text-[#8a5a2b] mt-1">
+        <span data-i18n="zh">请尝试更换关键词检索</span>
+        <span data-i18n="en">Try searching with a different keyword</span>
+      </p>
+    </div>
+  </section>
+
+  <script>
+    const searchInput = document.getElementById('notes-search-input') as HTMLInputElement | null;
+    const noteItems = document.querySelectorAll<HTMLElement>('.note-item');
+    const emptyState = document.getElementById('notes-empty-state');
+
+    searchInput?.addEventListener('input', (e) => {
+      const q = (e.target as HTMLInputElement).value.trim().toLowerCase();
+      let visible = 0;
+      noteItems.forEach((item) => {
+        const text = item.getAttribute('data-search-text') || '';
+        if (!q || text.includes(q)) {
+          item.classList.remove('hidden');
+          visible++;
+        } else {
+          item.classList.add('hidden');
+        }
+      });
+      if (emptyState) {
+        emptyState.classList.toggle('hidden', visible > 0);
+      }
+    });
+  </script>
+</BaseLayout>

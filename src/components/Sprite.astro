@@ -1,0 +1,23 @@
+---
+import { spriteRects } from '../lib/sprites';
+interface Props {
+  name: string;
+  /** CSS pixels per sprite pixel */
+  scale?: number;
+  class?: string;
+  sway?: boolean;
+}
+const { name, scale = 3, class: cls = '', sway = false } = Astro.props;
+const { w, h, rects } = spriteRects(name);
+---
+
+<svg
+  class:list={['sprite inline-block shrink-0', sway && 'sprite-sway', cls]}
+  width={w * scale}
+  height={h * scale}
+  viewBox={`0 0 ${w} ${h}`}
+  shape-rendering="crispEdges"
+  aria-hidden="true"
+>
+  {rects.map((r) => <rect x={r.x} y={r.y} width={r.w} height="1" fill={r.fill} />)}
+</svg>

@@ -1,0 +1,156 @@
+---
+import '../styles/global.css';
+import { siteData } from '../data/cv';
+import Sprite from '../components/Sprite.astro';
+import Hud from '../components/Hud.astro';
+
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const {
+  title = `${siteData.profile.name.zh} (${siteData.profile.name.en}) · Academic Homepage`,
+  description = siteData.profile.bio.zh,
+} = Astro.props;
+---
+
+<!doctype html>
+<html lang="zh-CN" data-lang="zh">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="canonical" href="https://www.juniortree.com" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="preload" href="/fonts/fusion-pixel-12px-monospaced-latin.otf.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/fonts/fusion-pixel-12px-monospaced-zh_hans.otf.woff2" as="font" type="font/woff2" crossorigin />
+    <script is:inline>
+      (function () {
+        try {
+          const urlParams = new URLSearchParams(window.location.search);
+          const queryLang = urlParams.get('lang');
+          const savedLang = localStorage.getItem('yishu_lang');
+          const lang =
+            queryLang === 'en' || queryLang === 'zh'
+              ? queryLang
+              : savedLang === 'en' || savedLang === 'zh'
+                ? savedLang
+                : 'zh';
+          document.documentElement.setAttribute('data-lang', lang);
+          document.documentElement.setAttribute('lang', lang === 'en' ? 'en' : 'zh-CN');
+        } catch (e) {
+          document.documentElement.setAttribute('data-lang', 'zh');
+        }
+      })();
+    </script>
+  </head>
+  <body class="sv-grass min-h-screen flex flex-col text-ink">
+    <header class="sv-wood sticky top-0 z-30">
+      <div class="max-w-4xl mx-auto px-5 sm:px-8 h-14 flex items-center justify-between gap-4">
+        <a href="/" class="pixel-12 flex items-center gap-2 text-ink group" aria-label="Home">
+          <Sprite name="tree" scale={2} class="sprite-sway origin-bottom" />
+          <span>{siteData.profile.alias.toLowerCase()}</span>
+          <span class="hidden sm:inline text-faint">~/</span>
+        </a>
+
+        <div class="flex items-center gap-3 sm:gap-6">
+          <nav class="hidden md:flex items-center gap-5 pixel-12 text-muted">
+            <a href="/#publications" class="hover:text-ink transition-colors">
+              <span data-i18n="zh">论文</span><span data-i18n="en">pubs</span>
+            </a>
+            <a href="/#experience" class="hover:text-ink transition-colors">
+              <span data-i18n="zh">项目</span><span data-i18n="en">projects</span>
+            </a>
+            <a href="/#education" class="hover:text-ink transition-colors">
+              <span data-i18n="zh">教育</span><span data-i18n="en">education</span>
+            </a>
+            <a href="/#playground" class="hover:text-ink transition-colors">
+              <span data-i18n="zh">实验场</span><span data-i18n="en">lab</span>
+            </a>
+            <a href="/notes" class="hover:text-ink transition-colors">
+              <span data-i18n="zh">笔记</span><span data-i18n="en">notes</span>
+            </a>
+          </nav>
+
+          <div
+            class="inline-flex items-center border border-ink pixel-12"
+            role="group"
+            aria-label="Language Switcher"
+          >
+            <button type="button" data-lang-btn="zh" class="px-2 leading-[22px] transition-colors cursor-pointer">中</button>
+            <button type="button" data-lang-btn="en" class="px-2 leading-[22px] transition-colors cursor-pointer">EN</button>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="sv-panel flex-1 w-[calc(100%-1.5rem)] sm:w-full max-w-4xl mx-auto my-6 sm:my-10 px-5 sm:px-10 py-10 sm:py-14">
+      <slot />
+    </main>
+
+    <div class="max-w-4xl w-full mx-auto px-6 flex items-end justify-between overflow-hidden pointer-events-none select-none" aria-hidden="true">
+      <Sprite name="flower" scale={3} /><Sprite name="sapling" scale={3} /><Sprite name="pumpkin" scale={3} class="hidden sm:inline-block" />
+      <Sprite name="tree" scale={4} sway class="origin-bottom" /><Sprite name="flower" scale={3} /><Sprite name="sapling" scale={3} class="hidden sm:inline-block" />
+      <Sprite name="tree" scale={3} sway class="origin-bottom hidden sm:inline-block" /><Sprite name="flower" scale={3} />
+    </div>
+    <footer class="sv-wood sv-wood-foot py-6">
+      <div class="max-w-4xl mx-auto px-5 sm:px-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 pixel-12 text-muted">
+        <div>
+          <span>© {new Date().getFullYear()} </span>
+          <span data-i18n="zh">刘一树 · 首都师范大学生命科学学院</span>
+          <span data-i18n="en">Yishu Liu · College of Life Sciences, CNU</span>
+        </div>
+        <div class="flex flex-wrap items-center gap-4">
+          <a href={`mailto:${siteData.profile.email}`} class="hover:text-ink transition-colors">mail</a>
+          <a href={siteData.profile.orcidUrl} target="_blank" rel="noopener noreferrer" class="hover:text-ink transition-colors">orcid</a>
+          <a href={siteData.profile.github} target="_blank" rel="noopener noreferrer" class="hover:text-ink transition-colors">github</a>
+          <span class="text-faint">built with astro · three.js webgpu</span>
+        </div>
+      </div>
+    </footer>
+
+    <Hud />
+
+    <script>
+      function updateLangButtons(lang: string) {
+        document.querySelectorAll('[data-lang-btn]').forEach((btn) => {
+          const btnLang = btn.getAttribute('data-lang-btn');
+          if (btnLang === lang) {
+            btn.classList.add('bg-ink', 'text-white');
+            btn.classList.remove('text-muted');
+          } else {
+            btn.classList.remove('bg-ink', 'text-white');
+            btn.classList.add('text-muted');
+          }
+        });
+      }
+
+      function setLanguage(lang: 'zh' | 'en') {
+        document.documentElement.setAttribute('data-lang', lang);
+        document.documentElement.setAttribute('lang', lang === 'en' ? 'en' : 'zh-CN');
+        try {
+          localStorage.setItem('yishu_lang', lang);
+        } catch (e) {}
+        updateLangButtons(lang);
+      }
+
+      const currentLang = (document.documentElement.getAttribute('data-lang') as 'zh' | 'en') || 'zh';
+      updateLangButtons(currentLang);
+
+      document.querySelectorAll('[data-lang-btn]').forEach((btn) => {
+        btn.addEventListener('click', () => {
+          const targetLang = btn.getAttribute('data-lang-btn') as 'zh' | 'en';
+          if (targetLang) setLanguage(targetLang);
+        });
+      });
+    </script>
+  </body>
+</html>

@@ -1,0 +1,101 @@
+---
+import { Play, Pause, RotateCcw } from 'lucide-astro';
+---
+
+<div data-playground-panel="boids">
+  <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-4">
+    <p class="text-xs sm:text-sm text-[#8a5a2b] text-pretty">
+      <span data-i18n="zh">分离、对齐、聚合：三条局部规则涌现出群体行为（WebGPU 计算着色器，数千只个体并行）。悬停驱散，按住吸引。</span>
+      <span data-i18n="en">Separation, alignment, cohesion: flocking emerges from three local rules (WebGPU compute, thousands of agents). Hover to scatter, press to attract.</span>
+    </p>
+    <div class="flex items-center gap-1.5 shrink-0">
+      <button id="boids-toggle" type="button" class="academic-action-link cursor-pointer">
+        <span id="boids-icon-play" class="hidden"><Play size={12} /></span>
+        <span id="boids-icon-pause"><Pause size={12} /></span>
+        <span data-i18n="zh" id="boids-toggle-zh">暂停</span>
+        <span data-i18n="en" id="boids-toggle-en">Pause</span>
+      </button>
+      <button id="boids-reset" type="button" class="academic-action-link cursor-pointer">
+        <RotateCcw size={12} />
+        <span data-i18n="zh">重置</span>
+        <span data-i18n="en">Reset</span>
+      </button>
+    </div>
+  </div>
+
+  <div class="relative border border-[#d4a75f] bg-[#fdf0c8]">
+    <canvas id="boids-canvas" class="pixel-canvas block w-full h-[260px] sm:h-[360px] cursor-crosshair"></canvas>
+    <div id="boids-fallback" class="hidden p-8 text-center text-xs text-[#8a5a2b] font-mono">
+      <span data-i18n="zh">此浏览器不支持 WebGPU。请使用最新版 Chrome / Edge / Safari 查看。</span>
+      <span data-i18n="en">WebGPU is not available in this browser. Try a recent Chrome / Edge / Safari.</span>
+    </div>
+    <div id="boids-pane" class="sim-pane absolute top-2 right-2 w-[220px] max-sm:hidden"></div>
+  </div>
+
+  <div class="mt-2 flex items-center justify-between font-mono text-[11px] text-[#8a5a2b]">
+    <span>three.js WebGPURenderer · TSL compute</span>
+    <span id="boids-status"></span>
+  </div>
+
+  <script>
+    import { Pane } from 'tweakpane';
+    import * as EssentialsPlugin from '@tweakpane/plugin-essentials';
+    import { mountSim } from '../lib/sim/mount';
+
+    const canvas = document.getElementById('boids-canvas') as HTMLCanvasElement;
+    const statusEl = document.getElementById('boids-status')!;
+    const toggleBtn = document.getElementById('boids-toggle')!;
+    const toggleZh = document.getElementById('boids-toggle-zh')!;
+    const toggleEn = document.getElementById('boids-toggle-en')!;
+    const playIcon = document.getElementById('boids-icon-play')!;
+    const pauseIcon = document.getElementById('boids-icon-pause')!;
+
+    let params: import('../lib/sim/boids').BoidsParams;
+
+    const mount = mountSim({
+      canvas,
+      fallback: document.getElementById('boids-fallback')!,
+      create: async () => {
+        const { createBoids, defaultBoidsParams } = await import('../lib/sim/boids');
+        params = defaultBoidsParams();
+        // Tweakpane's FPS graph is wired in through frame hooks.
+        const pane = new Pane({ container: document.getElementById('boids-pane')!, title: 'boids' });
+        pane.registerPlugin(EssentialsPlugin);
+        const fpsGraph = pane.addBlade({ view: 'fpsgraph', label: 'fps', rows: 2 }) as any;
+        const sim = await createBoids(
+          canvas,
+          params,
+          (s) => (statusEl.textContent = `${s.count} boids · ${s.fps.toFixed(0)} fps`),
+          { begin: () => fpsGraph.begin(), end: () => fpsGraph.end() },
+        );
+        const sync = () => sim.sync();
+        pane.addBinding(params, 'separation', { min: 0, max: 3, step: 0.05 }).on('change', sync);
+        pane.addBinding(params, 'alignment', { min: 0, max: 3, step: 0.05 }).on('change', sync);
+        pane.addBinding(params, 'cohesion', { min: 0, max: 3, step: 0.05 }).on('change', sync);
+        pane.addBinding(params, 'radius', { min: 8, max: 60, step: 1 }).on('change', sync);
+        pane.addBinding(params, 'maxSpeed', { min: 0.5, max: 5, step: 0.1 }).on('change', sync);
+        pane.addBinding(params, 'pixel', { min: 1, max: 6, step: 1 }).on('change', sync);
+        pane
+          .addBinding(params, 'colorMode', { options: { density: 'density', heading: 'heading' } })
+          .on('change', sync);
+        pane
+          .addBinding(params, 'count', { options: { '1024': 1024, '2048': 2048, '4096': 4096, '8192': 8192 } })
+          .on('change', () => sim.reset());
+        pane.expanded = false;
+        return sim;
+      },
+      onReady: (sim) => {
+        document.getElementById('boids-reset')!.addEventListener('click', () => sim.reset());
+      },
+    });
+
+    toggleBtn.addEventListener('click', () => {
+      mount.setPaused(!mount.paused);
+      const p = mount.paused;
+      playIcon.classList.toggle('hidden', !p);
+      pauseIcon.classList.toggle('hidden', p);
+      toggleZh.textContent = p ? '继续' : '暂停';
+      toggleEn.textContent = p ? 'Resume' : 'Pause';
+    });
+  </script>
+</div>

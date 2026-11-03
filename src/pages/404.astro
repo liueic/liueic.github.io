@@ -1,0 +1,49 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout title="404 · Page Not Found | 刘一树 (Yishu Liu)">
+  <section class="py-16 text-center max-w-md mx-auto">
+    <div class="mx-auto w-32 h-32 mb-6 flex items-center justify-center bg-[#f6e0a4] border border-[#d4a75f]">
+      <svg class="w-16 h-16" viewBox="0 0 64 64" fill="none">
+        <path
+          d="M20 12C20 24 44 24 44 36C44 48 20 48 20 56"
+          stroke="#4a2a14"
+          stroke-width="2.5"
+          stroke-linecap="round"
+        />
+        <path
+          d="M44 12C44 24 20 24 20 36C20 48 44 48 44 56"
+          stroke="#8a5a2b"
+          stroke-width="2.5"
+          stroke-linecap="round"
+          stroke-dasharray="3 3"
+        />
+        <line x1="23" y1="18" x2="41" y2="18" stroke="#b98a45" stroke-width="2" stroke-linecap="round" />
+        <line x1="23" y1="42" x2="41" y2="42" stroke="#b98a45" stroke-width="2" stroke-linecap="round" />
+        <rect x="28" y="26" width="8" height="8" fill="#fff6dc" stroke="#4a2a14" stroke-width="2" />
+      </svg>
+    </div>
+
+    <span class="md3-chip font-mono text-xs mb-3">HTTP 404 · Sequence Not Found</span>
+
+    <h1 class="text-xl sm:text-2xl text-[#4a2a14] mt-2">
+      <span data-i18n="zh">未比对到当前页面</span>
+      <span data-i18n="en">Alignment Failed: Page Not Found</span>
+    </h1>
+
+    <p class="text-sm text-[#8a5a2b] mt-2 mb-6">
+      <span data-i18n="zh">你访问的链接可能已迁移或不存在，可以返回主页查看刘一树的最新科研与开源动态。</span>
+      <span data-i18n="en">The requested URL could not be aligned to any existing route. Return to the homepage to explore Yishu Liu's research and projects.</span>
+    </p>
+
+    <div class="flex items-center justify-center gap-2">
+      <a href="/" class="academic-action-link px-4 py-1.5">
+        ← <span data-i18n="zh">返回个人主页</span><span data-i18n="en">Back to Homepage</span>
+      </a>
+      <a href="/notes" class="academic-action-link px-4 py-1.5">
+        <span data-i18n="zh">查看科研笔记</span><span data-i18n="en">Research Notes</span>
+      </a>
+    </div>
+  </section>
+</BaseLayout>
