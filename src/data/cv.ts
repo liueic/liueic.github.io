@@ -119,7 +119,7 @@ export const siteData = {
         en: 'iLepBase: A Comprehensive Integrated Genomics and Biodiversity Database with Online Analytical Workflows for Lepidoptera',
       },
       authors: {
-        zh: '核心作者 / 第二作者（Second Author，与团队共同完成）',
+        zh: '第二作者（Second Author，与团队共同完成）',
         en: 'Second Author & Lead Platform Architect (with iLepBase Consortium)',
       },
       venue: {
@@ -131,7 +131,7 @@ export const siteData = {
         en: 'Under Review',
       },
       role: {
-        zh: '共同核心作者（二作）· 负责数据仓库构建、Go Fiber 后端架构与在线生信工具集成',
+        zh: '第二作者 · 负责数据仓库构建、Go Fiber 后端架构与在线生信工具集成',
         en: 'Second Author · Data Warehouse Curation, Go Fiber Backend & Online Bioinformatics Suite',
       },
       summary: {
@@ -240,7 +240,7 @@ export const siteData = {
         en: 'Capital Normal University',
       },
       role: {
-        zh: '前后端核心研发 & 论文共同核心作者（二作在审）',
+        zh: '前后端核心研发 & 论文第二作者（在审）',
         en: 'Core Full-Stack Developer & Second Author (MS Under Review)',
       },
       period: '2026.01 – 2026.05',
