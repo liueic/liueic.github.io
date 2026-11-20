@@ -1,26 +1,2 @@
 /** Pixel props sliced from "Mini Farm Asset Pack - 16x16" by Jofra (CC0). Sizes in sprite pixels. */
-export const PROPS: Record<string, [number, number]> = {
-  "rabbit": [18, 12],
-  "cow": [24, 15],
-  "pig": [16, 12],
-  "chicken": [15, 13],
-  "pine": [31, 37],
-  "pine-small": [22, 29],
-  "boulder": [32, 30],
-  "sign-arrow": [13, 15],
-  "sign": [12, 15],
-  "barrel": [12, 16],
-  "stump": [16, 17],
-  "log": [15, 15],
-  "rock": [16, 16],
-  "orange-bush": [15, 15],
-  "bush": [16, 14],
-  "bush-white": [15, 14],
-  "fence": [24, 14],
-  "crop0": [12, 13],
-  "crop1": [12, 13],
-  "crop2": [12, 12],
-  "crop3": [6, 8],
-  "crop4": [6, 8],
-  "crop5": [12, 7]
-};
+export const PROPS: Record<string, [number, number]> = {"rabbit": [18, 12], "cow": [24, 15], "pig": [16, 12], "chicken": [15, 13], "pine": [31, 37], "pine-small": [22, 29], "boulder": [32, 30], "sign-arrow": [13, 15], "sign": [12, 15], "barrel": [12, 16], "stump": [16, 17], "log": [15, 15], "rock": [16, 16], "orange-bush": [15, 15], "bush": [16, 14], "bush-white": [15, 14], "fence": [24, 14], "crop0": [12, 13], "crop1": [12, 13], "crop2": [12, 12], "crop3": [6, 8], "crop4": [6, 8], "crop5": [12, 7], "tuft-a": [10, 7], "tuft-b": [14, 12], "tuft-c": [9, 8], "fl-yellow": [4, 5], "fl-blue": [4, 5], "fl-blue2": [4, 5]};

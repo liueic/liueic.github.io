@@ -11,13 +11,15 @@ const { name, scale = 3, flip = false, class: cls = '' } = Astro.props;
 const [w, h] = PROPS[name] ?? [16, 16];
 ---
 
-<img
-  src={`/assets/farm/${name}.png`}
-  width={w * scale}
-  height={h * scale}
-  alt=""
-  aria-hidden="true"
-  loading="lazy"
-  decoding="async"
-  class:list={['prop inline-block shrink-0', flip && '-scale-x-100', cls]}
-/>
+<span class:list={['prop-wrap inline-block shrink-0 align-bottom', !/^(tuft|fl-)/.test(name) && 'prop-shadow']}>
+  <img
+    src={`/assets/farm/${name}.png`}
+    width={w * scale}
+    height={h * scale}
+    alt=""
+    aria-hidden="true"
+    loading="lazy"
+    decoding="async"
+    class:list={['prop block', flip && '-scale-x-100', cls]}
+  />
+</span>

@@ -29,21 +29,38 @@ const links = [
   { label: 'orcid', href: siteData.profile.orcidUrl },
 ];
 // Scenery scattered on the grass beside the layout (very wide screens only).
+// pos = horizontal position inside the margin (0 = outer edge, 100 = next to the layout)
 const scenery = {
   left: [
-    { name: 'chicken', top: '8%', x: 90, scale: 4 },
-    { name: 'stump', top: '24%', x: 40, scale: 4 },
-    { name: 'cow', top: '41%', x: 70, scale: 4 },
-    { name: 'sign-arrow', top: '58%', x: 110, scale: 4 },
-    { name: 'pine-small', top: '74%', x: 30, scale: 3 },
-    { name: 'rabbit', top: '90%', x: 80, scale: 4 },
+    { name: 'chicken', top: '6%', pos: 60, scale: 4 },
+    { name: 'tuft-b', top: '10%', pos: 20, scale: 4 },
+    { name: 'fl-yellow', top: '14%', pos: 80, scale: 4 },
+    { name: 'stump', top: '22%', pos: 35, scale: 4 },
+    { name: 'tuft-a', top: '29%', pos: 75, scale: 4 },
+    { name: 'cow', top: '38%', pos: 50, scale: 3 },
+    { name: 'fl-blue', top: '45%', pos: 15, scale: 4 },
+    { name: 'fl-blue2', top: '47%', pos: 30, scale: 4 },
+    { name: 'sign-arrow', top: '55%', pos: 80, scale: 4 },
+    { name: 'tuft-c', top: '63%', pos: 25, scale: 4 },
+    { name: 'pine-small', top: '71%', pos: 55, scale: 3 },
+    { name: 'fl-yellow', top: '80%', pos: 20, scale: 4 },
+    { name: 'rabbit', top: '88%', pos: 70, scale: 4 },
+    { name: 'tuft-b', top: '95%', pos: 30, scale: 4 },
   ],
   right: [
-    { name: 'bush-white', top: '14%', x: 60, scale: 4 },
-    { name: 'pig', top: '31%', x: 100, scale: 4 },
-    { name: 'barrel', top: '49%', x: 50, scale: 4 },
-    { name: 'log', top: '66%', x: 90, scale: 4 },
-    { name: 'chicken', top: '82%', x: 40, scale: 4 },
+    { name: 'tuft-c', top: '8%', pos: 70, scale: 4 },
+    { name: 'bush-white', top: '15%', pos: 40, scale: 4 },
+    { name: 'fl-blue', top: '21%', pos: 85, scale: 4 },
+    { name: 'pig', top: '30%', pos: 60, scale: 3 },
+    { name: 'tuft-a', top: '37%', pos: 20, scale: 4 },
+    { name: 'fl-yellow', top: '43%', pos: 75, scale: 4 },
+    { name: 'barrel', top: '51%', pos: 45, scale: 4 },
+    { name: 'tuft-b', top: '58%', pos: 85, scale: 4 },
+    { name: 'log', top: '66%', pos: 30, scale: 4 },
+    { name: 'fl-blue2', top: '72%', pos: 70, scale: 4 },
+    { name: 'chicken', top: '80%', pos: 55, scale: 4 },
+    { name: 'tuft-c', top: '87%', pos: 20, scale: 4 },
+    { name: 'fl-yellow', top: '93%', pos: 65, scale: 4 },
   ],
 };
 
@@ -134,17 +151,19 @@ const {
       {['left', 'right'].map((side) => (
         <div
           class:list={[
-            'hidden min-[1500px]:block absolute inset-y-0 w-[calc((100vw-84rem)/2)] overflow-hidden pointer-events-none select-none',
+            'hidden min-[1440px]:block absolute inset-y-0 w-[calc((100vw-84rem)/2)] overflow-hidden pointer-events-none select-none',
             side === 'left' ? 'left-0' : 'right-0',
           ]}
           aria-hidden="true"
         >
-          {scenery[side as 'left' | 'right'].map((it) => (
-            <span class="absolute" style={`top:${it.top};${side === 'left' ? 'left' : 'right'}:${it.x}px`}>
+          <div class:list={['absolute inset-y-0', side === 'left' ? 'left-3 right-3' : 'left-3 right-16']}>
+            {scenery[side as 'left' | 'right'].map((it) => (
+            <span class="absolute" style={`top:${it.top};${side === 'left' ? `left:${it.pos}%;transform:translateX(-${it.pos}%)` : `right:${it.pos}%;transform:translateX(${it.pos}%)`}`}>
               <Prop name={it.name} scale={it.scale} flip={side === 'right'} />
             </span>
           ))}
-        </div>
+          </div>
+          </div>
       ))}
 
       <div class="relative z-10 w-full max-w-[84rem] mx-auto px-3 sm:px-4 xl:px-10 xl:grid xl:grid-cols-[11rem_minmax(0,1fr)_11rem] xl:gap-6 items-start">
@@ -158,7 +177,7 @@ const {
               {toc.map((t) => (
                 <li>
                   <a href={`/#${t.id}`} data-toc={t.id} class="flex items-center gap-2 pixel-12 px-1.5 py-1">
-                    <Sprite name={t.icon} scale={1.5} />
+                    <span class="sv-ico"><Sprite name={t.icon} scale={1.5} /></span>
                     <span data-i18n="zh">{t.zh}</span><span data-i18n="en">{t.en}</span>
                   </a>
                 </li>
@@ -182,7 +201,7 @@ const {
 
         <!-- Right rail: farm stats + links (sits below the HUD clock) -->
         <aside class="hidden xl:flex flex-col gap-4 sticky top-24 mt-10" aria-label="Site summary">
-          <div class="sv-hud-box p-2" aria-hidden="true">
+          <div class="sv-hud-box p-3" aria-hidden="true">
             <div class="pixel-12" data-hud-date>Spring 1</div>
             <div class="relative h-[18px] my-1.5 mx-[8px] bg-[#4a2a14]">
               <span data-hud-sun class="absolute top-1/2 left-0 leading-none"><Sprite name="sun" scale={1.5} /></span>
@@ -195,9 +214,9 @@ const {
             </div>
             <ul class="flex flex-col gap-1.5">
               {stats.map((st) => (
-                <li class="flex items-center justify-between gap-2 pixel-12">
+                <li class="flex items-center justify-between gap-2 pixel-12 pl-[8px]">
                   <span class="inline-flex items-center gap-2">
-                    <Sprite name={st.icon} scale={1.5} />
+                    <span class="sv-ico"><Sprite name={st.icon} scale={1.5} /></span>
                     <span data-i18n="zh">{st.zh}</span><span data-i18n="en">{st.en}</span>
                   </span>
                   <span class="sv-stat-n">{st.n}</span>
@@ -212,7 +231,7 @@ const {
             <ul class="sv-toc flex flex-col gap-0.5">
               {links.map((l) => (
                 <li>
-                  <a href={l.href} target={l.href.startsWith('http') ? '_blank' : undefined} rel="noopener noreferrer" class="block pixel-12 px-1.5 py-1">{l.label} ↗</a>
+                  <a href={l.href} target={l.href.startsWith('http') ? '_blank' : undefined} rel="noopener noreferrer" class="flex items-center gap-2 pixel-12 px-1.5 py-1"><span class="sv-ico text-[#a0632c]" aria-hidden="true">▸</span>{l.label} ↗</a>
                 </li>
               ))}
             </ul>

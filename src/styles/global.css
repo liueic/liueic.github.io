@@ -614,3 +614,20 @@ html[data-lang="en"] [data-i18n="zh"] {
 /* Research-interest tiles: equal-height rows and a true square marker */
 .sv-quest-card { height: 100%; }
 .sv-quest { width: 18px; height: 18px; line-height: 18px; margin-top: 1px; }
+
+/* Fixed icon slot so labels start at the same x regardless of sprite width */
+.sv-ico { display: inline-flex; align-items: center; justify-content: center; width: 24px; height: 24px; flex-shrink: 0; }
+
+/* Soft oval ground shadow under standing props */
+.prop-shadow { position: relative; isolation: isolate; }
+.prop-shadow::after {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  left: 6%;
+  right: 6%;
+  bottom: -3px;
+  height: 22%;
+  border-radius: 50%;
+  background: rgba(35, 80, 25, 0.35);
+}
