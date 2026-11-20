@@ -17,7 +17,7 @@ bun run build
 
 ## Updating CV & Content
 
-All bilingual profile information, publications, research experiences, open-source projects, education, honors, and research notes are centrally maintained in:
+All bilingual profile information, publications, research experiences, open-source projects, education, honors are centrally maintained in:
 
 - [`src/data/cv.ts`](./src/data/cv.ts)
 

@@ -58,19 +58,6 @@ export interface HonorItem {
   detail: BilingualText;
 }
 
-export interface ResearchNoteItem {
-  slug: string;
-  date: string;
-  readingTime: BilingualText;
-  category: 'Bioinformatics' | 'AI & MCP' | 'Systems & HPC';
-  title: BilingualText;
-  excerpt: BilingualText;
-  tags: string[];
-  content: {
-    zh: string[];
-    en: string[];
-  };
-}
 
 export const siteData = {
   profile: {
@@ -92,8 +79,8 @@ export const siteData = {
       en: 'Hi, I’m Yishu Liu! With an interdisciplinary background (Optoelectronics → Biological Sciences), I love bridging computation and biology. My current work spans transcriptomic/proteomic analysis and Molecular Dynamics (MD) simulations—focusing on protein-protein interaction (PPI) modeling and binding-site screening around transcription factor Nanog, paired with wet-lab training in co-IP, Western Blot, and cell culture. I aim to pursue graduate research in MD simulation and Computer-Aided Drug Design (Drug Discovery). Always open to research opportunities and collaborations!',
     },
     footnote: {
-      zh: '幸会！热爱摄影、大自然、科幻策略与 Vibe Coding（Soyo 厨 🎸）',
-      en: 'Into photography, nature, sci-fi/strategy games & Vibe Coding 🎸',
+      zh: '幸会！热爱摄影、大自然、科幻策略与 Vibe Coding（Soyo 厨）',
+      en: 'Into photography, nature, sci-fi/strategy games & Vibe Coding',
     },
     email: 'yishu.liu@cnu.edu.cn',
     altEmail: 'liueic@ciallo.cv',
@@ -520,59 +507,4 @@ export const siteData = {
       },
     },
   ] satisfies HonorItem[],
-
-  researchNotes: [
-    {
-      slug: 'scaling-molecular-docking-nextflow-slurm',
-      date: '2026-02-18',
-      readingTime: { zh: '6 分钟阅读', en: '6 min read' },
-      category: 'Bioinformatics',
-      title: {
-        zh: 'SmartDock 实践笔记：基于 Nextflow 与 SLURM 的亿级小分子高通量对接与 GPU 负载均衡优化',
-        en: 'Scaling Molecular Docking to 100M+ Compounds with Nextflow, UniDock, and Dynamic SLURM GPU Scheduling',
-      },
-      excerpt: {
-        zh: '复盘在鳞翅目 P450 酶系虚拟筛选中，如何利用 Rust/Python 解决海量小分子文件 I/O 瓶颈，并结合 ColabFold 与 UniDock 将集群吞吐量提升 2 倍。',
-        en: 'Technical lessons from screening Lepidoptera P450 enzymes: overcoming small-file I/O bottlenecks with Rust/Python and doubling GPU cluster throughput for ColabFold + UniDock.',
-      },
-      tags: ['Nextflow', 'SLURM', 'UniDock', 'ColabFold', 'Rust'],
-      content: {
-        zh: [
-          '在大规模虚拟筛选（Virtual Screening）任务中，当受体蛋白数量达到数千级（7,000+ ColabFold 预测结构）、配体小分子库达到千万至亿级时，传统的单机或简单脚本调度往往会遭遇两个核心瓶颈：海量小文件导致的分布式文件系统元数据 I/O 阻塞，以及不同大小蛋白口袋导致的 GPU 负载不均。',
-          '1. 化合物库预处理与 I/O 合并：我们使用 Rust 与 Python 编写了流式批处理分片工具，在进入 UniDock 之前先完成 ADMET 性质初筛与二进制打包，显著降低了 SLURM 节点上的磁盘寻道开销。',
-          '2. Nextflow 动态 GPU 资源分配：在 Nextflow 流程中根据蛋白残基长度和结合口袋体积对任务进行分桶（Bucketing），动态映射 SLURM 的 GPU 显存与并发度，最终使整体对接吞吐量提升约 2 倍，成功支撑了鳞翅目 P450 酶系与植物次生代谢物的高通量互作筛选。',
-        ],
-        en: [
-          'In ultra-large-scale virtual screening campaigns involving 7,000+ ColabFold-predicted protein structures and 100M+ small molecules, traditional shell scripts quickly hit two walls: metadata I/O storms on shared cluster filesystems and severe GPU stragglers across variable-sized binding pockets.',
-          '1. Compound Library Sharding & I/O Optimization: We wrote high-throughput Rust and Python preprocessing utilities to filter compounds by ADMET rules and pack ligand batches prior to UniDock execution, dramatically reducing random disk I/O across SLURM worker nodes.',
-          '2. Dynamic GPU Bucketing in Nextflow: By grouping jobs according to protein sequence length and pocket volume, our Nextflow workflow dynamically tunes batch sizes and GPU concurrency on SLURM, achieving a ~2× throughput improvement in screening Lepidoptera P450 enzymes against plant secondary metabolites.',
-        ],
-      },
-    },
-    {
-      slug: 'designing-biomedical-mcp-servers-at-scale',
-      date: '2025-12-10',
-      readingTime: { zh: '5 分钟阅读', en: '5 min read' },
-      category: 'AI & MCP',
-      title: {
-        zh: '从 0 到 400 万次调用：构建高可用生物医学文献 MCP Server 的架构思考',
-        en: 'From 0 to 4M+ Invocations: Designing High-Availability Biomedical MCP Servers for Scientific Agents',
-      },
-      excerpt: {
-        zh: '探讨如何围绕 NCBI E-utilities 与 PMC 接口设计统一的 AgentResponse 协议模型、API Key 池负载均衡及多级缓存体系。',
-        en: 'How we designed a unified AgentResponse schema, API key pool load-balancing, and multi-tier LRU/disk caching for PubMed MCP Server.',
-      },
-      tags: ['MCP', 'TypeScript', 'PubMed', 'Scientific Agents', 'Caching'],
-      content: {
-        zh: [
-          '科学智能体（Scientific LLM Agents）在执行文献调研、变异解读或实验设计时，极度依赖高可靠、结构化的生物医学文献检索能力。然而直接将原始 XML 或非结构化网页返回给模型，不仅消耗大量上下文 Token，还会因 NCBI API 速率限制导致高并发下频繁失败。',
-          '在开发 PubMed MCP Server 的过程中，我们重点解决了三个工程问题：第一，设计统一的 AgentResponse 响应标准，将 PMID、DOI、摘要结构与全文段落清洗为对 LLM 友好的紧凑 JSON/Markdown；第二，同时支持本地 stdio 与云端托管所需的 Streamable HTTP 双传输；第三，引入多 API Key 轮询池与「内存 LRU + 本地文件持久化」二级缓存，从而在魔搭社区稳定支撑了超过 400 万次调用。',
-        ],
-        en: [
-          'Scientific LLM Agents rely heavily on deterministic, structured access to biomedical literature for hypothesis generation and variant interpretation. Feeding raw NCBI XML responses directly into an LLM wastes context window tokens, while unbuffered requests quickly hit upstream E-utilities rate limits.',
-          'While building PubMed MCP Server, we focused on three architectural pillars: (1) a deterministic AgentResponse schema that normalizes abstracts, MeSH terms, and full-text sections into token-efficient structures; (2) dual transport support across local stdio and cloud-hosted Streamable HTTP; and (3) an API Key load-balancing pool paired with two-level caching (in-memory LRU + persistent disk storage), enabling the service to reliably handle over 4,000,000 invocations on ModelScope.',
-        ],
-      },
-    },
-  ] satisfies ResearchNoteItem[],
 };

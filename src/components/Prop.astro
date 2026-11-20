@@ -1,0 +1,23 @@
+---
+import { PROPS } from '../lib/props';
+interface Props {
+  name: string;
+  /** CSS pixels per sprite pixel (use integers to stay crisp) */
+  scale?: number;
+  flip?: boolean;
+  class?: string;
+}
+const { name, scale = 3, flip = false, class: cls = '' } = Astro.props;
+const [w, h] = PROPS[name] ?? [16, 16];
+---
+
+<img
+  src={`/assets/farm/${name}.png`}
+  width={w * scale}
+  height={h * scale}
+  alt=""
+  aria-hidden="true"
+  loading="lazy"
+  decoding="async"
+  class:list={['prop inline-block shrink-0', flip && '-scale-x-100', cls]}
+/>

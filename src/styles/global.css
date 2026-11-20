@@ -569,3 +569,48 @@ html[data-lang="en"] [data-i18n="zh"] {
   .sv-next { animation: none; }
   .sv-portrait, .sv-portrait-img { transition: none; }
 }
+
+/* ------------------------------------------------------------------
+ * Side rails: TOC, stats, research-interest tiles
+ * ------------------------------------------------------------------ */
+.sv-toc a { color: #4a2a14; border: 2px solid transparent; }
+.sv-toc a:hover { background: #fdebc2; border-color: #b27a3c; }
+.sv-toc a[data-active="true"] { background: #fff3d1; border-color: #d4421a; }
+.sv-toc a[data-active="true"]::after { content: '◀'; margin-left: auto; color: #d4421a; font-size: 10px; }
+.sv-stat-n {
+  min-width: 28px;
+  padding: 0 6px;
+  text-align: center;
+  background: #5b2f12;
+  color: #ffd23f;
+}
+.sv-quest-card {
+  padding: 8px 10px;
+  background: #f6e0a4;
+  border: 2px solid #b27a3c;
+  box-shadow: inset 0 0 0 2px #fdf0c8;
+}
+
+/* Clickable links read as wooden buttons; tags stay flat parchment chips. */
+.academic-action-link {
+  background-color: #e9b266;
+  border: 2px solid #5b2f12;
+  box-shadow: inset 0 0 0 1px #fbd899, 0 2px 0 0 #3d1f0b;
+}
+.academic-action-link:hover { background-color: #5b2f12; box-shadow: 0 2px 0 0 #3d1f0b; }
+
+/* Stardew-style text shadow on the wooden header / footer */
+.sv-wood { text-shadow: 1px 1px 0 #3d1f0b; }
+
+/* Mobile section nav (rails are hidden below xl) */
+.sv-mobile-nav { overflow-x: auto; scrollbar-width: none; }
+.sv-mobile-nav::-webkit-scrollbar { display: none; }
+
+/* Props from the CC0 pack: crisp pixels, nudged toward Stardew's warmer palette */
+.prop { image-rendering: pixelated; filter: sepia(0.18) saturate(0.92); }
+.prop { filter: sepia(0.18) saturate(0.92) drop-shadow(0 3px 0 rgba(45, 85, 25, 0.35)); }
+.sv-portrait-img { aspect-ratio: 1 / 1; height: 100%; object-fit: cover; object-position: 50% 62%; }
+
+/* Research-interest tiles: equal-height rows and a true square marker */
+.sv-quest-card { height: 100%; }
+.sv-quest { width: 18px; height: 18px; line-height: 18px; margin-top: 1px; }

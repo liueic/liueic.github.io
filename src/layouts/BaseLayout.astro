@@ -2,12 +2,50 @@
 import '../styles/global.css';
 import { siteData } from '../data/cv';
 import Sprite from '../components/Sprite.astro';
+import Prop from '../components/Prop.astro';
 import Hud from '../components/Hud.astro';
 
 interface Props {
   title?: string;
   description?: string;
 }
+
+const toc = [
+  { id: 'about', zh: '简介', en: 'About', icon: 'flower' },
+  { id: 'publications', zh: '论文', en: 'Papers', icon: 'book' },
+  { id: 'experience', zh: '项目', en: 'Projects', icon: 'pickaxe' },
+  { id: 'education', zh: '教育', en: 'Education', icon: 'sapling' },
+  { id: 'skills', zh: '技能与荣誉', en: 'Skills', icon: 'star' },
+];
+const stats = [
+  { icon: 'book', zh: '论文', en: 'Papers', n: siteData.publications.length },
+  { icon: 'pickaxe', zh: '项目', en: 'Projects', n: siteData.experiences.length },
+  { icon: 'sapling', zh: '教育', en: 'Education', n: siteData.education.length },
+  { icon: 'star', zh: '荣誉', en: 'Honors', n: siteData.honors.length },
+];
+const links = [
+  { label: 'email', href: `mailto:${siteData.profile.email}` },
+  { label: 'github', href: siteData.profile.github },
+  { label: 'orcid', href: siteData.profile.orcidUrl },
+];
+// Scenery scattered on the grass beside the layout (very wide screens only).
+const scenery = {
+  left: [
+    { name: 'chicken', top: '8%', x: 90, scale: 4 },
+    { name: 'stump', top: '24%', x: 40, scale: 4 },
+    { name: 'cow', top: '41%', x: 70, scale: 4 },
+    { name: 'sign-arrow', top: '58%', x: 110, scale: 4 },
+    { name: 'pine-small', top: '74%', x: 30, scale: 3 },
+    { name: 'rabbit', top: '90%', x: 80, scale: 4 },
+  ],
+  right: [
+    { name: 'bush-white', top: '14%', x: 60, scale: 4 },
+    { name: 'pig', top: '31%', x: 100, scale: 4 },
+    { name: 'barrel', top: '49%', x: 50, scale: 4 },
+    { name: 'log', top: '66%', x: 90, scale: 4 },
+    { name: 'chicken', top: '82%', x: 40, scale: 4 },
+  ],
+};
 
 const {
   title = `${siteData.profile.name.zh} (${siteData.profile.name.en}) · Academic Homepage`,
@@ -54,15 +92,14 @@ const {
   </head>
   <body class="sv-grass min-h-screen flex flex-col text-ink">
     <header class="sv-wood sticky top-0 z-30">
-      <div class="max-w-4xl mx-auto px-5 sm:px-8 h-14 flex items-center justify-between gap-4">
-        <a href="/" class="pixel-12 flex items-center gap-2 text-ink group" aria-label="Home">
+      <div class="max-w-[84rem] mx-auto px-3 sm:px-4 xl:px-10 h-14 grid grid-cols-[1fr_auto_1fr] items-center gap-4">
+        <a href="/" class="pixel-12 flex items-center gap-2 text-ink group justify-self-start" aria-label="Home">
           <Sprite name="tree" scale={2} class="sprite-sway origin-bottom" />
           <span>{siteData.profile.alias.toLowerCase()}</span>
           <span class="hidden sm:inline text-faint">~/</span>
         </a>
 
-        <div class="flex items-center gap-3 sm:gap-6">
-          <nav class="hidden md:flex items-center gap-5 pixel-12 text-muted">
+        <nav class="hidden md:flex justify-center items-center gap-8 pixel-12 text-muted">
             <a href="/#publications" class="hover:text-ink transition-colors">
               <span data-i18n="zh">论文</span><span data-i18n="en">pubs</span>
             </a>
@@ -72,14 +109,9 @@ const {
             <a href="/#education" class="hover:text-ink transition-colors">
               <span data-i18n="zh">教育</span><span data-i18n="en">education</span>
             </a>
-            <a href="/#playground" class="hover:text-ink transition-colors">
-              <span data-i18n="zh">实验场</span><span data-i18n="en">lab</span>
-            </a>
-            <a href="/notes" class="hover:text-ink transition-colors">
-              <span data-i18n="zh">笔记</span><span data-i18n="en">notes</span>
-            </a>
-          </nav>
+        </nav>
 
+        <div class="flex items-center justify-end gap-3 sm:gap-6 col-start-3">
           <div
             class="inline-flex items-center border border-ink pixel-12"
             role="group"
@@ -90,19 +122,107 @@ const {
           </div>
         </div>
       </div>
+      <nav class="md:hidden sv-mobile-nav flex items-center gap-5 px-3 pb-2 pixel-12 whitespace-nowrap" aria-label="Sections">
+        {toc.map((t) => (
+          <a href={`/#${t.id}`}><span data-i18n="zh">{t.zh}</span><span data-i18n="en">{t.en}</span></a>
+        ))}
+      </nav>
     </header>
 
-    <main class="sv-panel flex-1 w-[calc(100%-1.5rem)] sm:w-full max-w-4xl mx-auto my-6 sm:my-10 px-5 sm:px-10 py-10 sm:py-14">
-      <slot />
-    </main>
+    <div class="relative flex-1 w-full">
+      <!-- Scenery on the grass margins (only when there is real room) -->
+      {['left', 'right'].map((side) => (
+        <div
+          class:list={[
+            'hidden min-[1500px]:block absolute inset-y-0 w-[calc((100vw-84rem)/2)] overflow-hidden pointer-events-none select-none',
+            side === 'left' ? 'left-0' : 'right-0',
+          ]}
+          aria-hidden="true"
+        >
+          {scenery[side as 'left' | 'right'].map((it) => (
+            <span class="absolute" style={`top:${it.top};${side === 'left' ? 'left' : 'right'}:${it.x}px`}>
+              <Prop name={it.name} scale={it.scale} flip={side === 'right'} />
+            </span>
+          ))}
+        </div>
+      ))}
 
-    <div class="max-w-4xl w-full mx-auto px-6 flex items-end justify-between overflow-hidden pointer-events-none select-none" aria-hidden="true">
-      <Sprite name="flower" scale={3} /><Sprite name="sapling" scale={3} /><Sprite name="pumpkin" scale={3} class="hidden sm:inline-block" />
-      <Sprite name="tree" scale={4} sway class="origin-bottom" /><Sprite name="flower" scale={3} /><Sprite name="sapling" scale={3} class="hidden sm:inline-block" />
-      <Sprite name="tree" scale={3} sway class="origin-bottom hidden sm:inline-block" /><Sprite name="flower" scale={3} />
+      <div class="relative z-10 w-full max-w-[84rem] mx-auto px-3 sm:px-4 xl:px-10 xl:grid xl:grid-cols-[11rem_minmax(0,1fr)_11rem] xl:gap-6 items-start">
+        <!-- Left rail: table of contents -->
+        <aside class="hidden xl:flex flex-col gap-4 sticky top-24 mt-10" aria-label="Table of contents">
+          <nav class="sv-hud-box p-3">
+            <div class="pixel-12 mb-2 pb-1 border-b-2 border-dashed border-[#b27a3c]">
+              <span data-i18n="zh">目录</span><span data-i18n="en">Menu</span>
+            </div>
+            <ul class="sv-toc flex flex-col gap-0.5">
+              {toc.map((t) => (
+                <li>
+                  <a href={`/#${t.id}`} data-toc={t.id} class="flex items-center gap-2 pixel-12 px-1.5 py-1">
+                    <Sprite name={t.icon} scale={1.5} />
+                    <span data-i18n="zh">{t.zh}</span><span data-i18n="en">{t.en}</span>
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </nav>
+        </aside>
+
+        <div class="min-w-0 flex flex-col">
+          <main class="sv-panel w-[calc(100%-1.5rem)] sm:w-full max-w-4xl xl:max-w-none mx-auto my-6 sm:my-10 px-5 sm:px-10 py-10 sm:py-14">
+            <slot />
+          </main>
+
+          <div class="w-full max-w-4xl xl:max-w-none mx-auto px-6 flex items-end justify-between overflow-hidden pointer-events-none select-none" aria-hidden="true">
+            <span class="flex items-end gap-3"><Prop name="rabbit" scale={4} /><Prop name="bush-white" scale={4} /></span>
+            <span class="hidden sm:flex items-end gap-3"><Prop name="fence" scale={4} /><Prop name="cow" scale={4} flip /></span>
+            <span class="flex items-end gap-3"><Prop name="stump" scale={4} /><Prop name="log" scale={4} /></span>
+            <span class="hidden sm:flex items-end gap-3"><Prop name="pine-small" scale={3} /><Prop name="chicken" scale={4} /></span>
+          </div>
+        </div>
+
+        <!-- Right rail: farm stats + links (sits below the HUD clock) -->
+        <aside class="hidden xl:flex flex-col gap-4 sticky top-24 mt-10" aria-label="Site summary">
+          <div class="sv-hud-box p-2" aria-hidden="true">
+            <div class="pixel-12" data-hud-date>Spring 1</div>
+            <div class="relative h-[18px] my-1.5 mx-[8px] bg-[#4a2a14]">
+              <span data-hud-sun class="absolute top-1/2 left-0 leading-none"><Sprite name="sun" scale={1.5} /></span>
+            </div>
+            <div class="pixel-12 text-right" data-hud-time>6:00 am</div>
+          </div>
+          <div class="sv-hud-box p-3">
+            <div class="pixel-12 mb-2 pb-1 border-b-2 border-dashed border-[#b27a3c]">
+              <span data-i18n="zh">农场概览</span><span data-i18n="en">Farm Stats</span>
+            </div>
+            <ul class="flex flex-col gap-1.5">
+              {stats.map((st) => (
+                <li class="flex items-center justify-between gap-2 pixel-12">
+                  <span class="inline-flex items-center gap-2">
+                    <Sprite name={st.icon} scale={1.5} />
+                    <span data-i18n="zh">{st.zh}</span><span data-i18n="en">{st.en}</span>
+                  </span>
+                  <span class="sv-stat-n">{st.n}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+          <div class="sv-hud-box p-3">
+            <div class="pixel-12 mb-2 pb-1 border-b-2 border-dashed border-[#b27a3c]">
+              <span data-i18n="zh">联系</span><span data-i18n="en">Contact</span>
+            </div>
+            <ul class="sv-toc flex flex-col gap-0.5">
+              {links.map((l) => (
+                <li>
+                  <a href={l.href} target={l.href.startsWith('http') ? '_blank' : undefined} rel="noopener noreferrer" class="block pixel-12 px-1.5 py-1">{l.label} ↗</a>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </aside>
+      </div>
     </div>
+
     <footer class="sv-wood sv-wood-foot py-6">
-      <div class="max-w-4xl mx-auto px-5 sm:px-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 pixel-12 text-muted">
+      <div class="max-w-[84rem] mx-auto px-3 sm:px-4 xl:px-10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 pixel-12 text-muted">
         <div>
           <span>© {new Date().getFullYear()} </span>
           <span data-i18n="zh">刘一树 · 首都师范大学生命科学学院</span>
@@ -112,12 +232,33 @@ const {
           <a href={`mailto:${siteData.profile.email}`} class="hover:text-ink transition-colors">mail</a>
           <a href={siteData.profile.orcidUrl} target="_blank" rel="noopener noreferrer" class="hover:text-ink transition-colors">orcid</a>
           <a href={siteData.profile.github} target="_blank" rel="noopener noreferrer" class="hover:text-ink transition-colors">github</a>
-          <span class="text-faint">built with astro · three.js webgpu</span>
+          <span class="text-faint">built with astro · pixel art: Jofra (CC0)</span>
         </div>
       </div>
     </footer>
 
     <Hud />
+
+    <script>
+      // Scroll-spy for the left-rail table of contents.
+      const tocLinks = document.querySelectorAll<HTMLAnchorElement>('[data-toc]');
+      const spied = Array.from(tocLinks)
+        .map((a) => document.getElementById(a.dataset.toc || ''))
+        .filter((el): el is HTMLElement => !!el);
+      if (spied.length) {
+        const setActive = () => {
+          let current = spied[0].id;
+          for (const el of spied) {
+            if (el.getBoundingClientRect().top <= window.innerHeight * 0.3) current = el.id;
+          }
+          if (window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 4) current = spied[spied.length - 1].id;
+          tocLinks.forEach((a) => a.setAttribute('data-active', a.dataset.toc === current ? 'true' : 'false'));
+        };
+        setActive();
+        addEventListener('scroll', setActive, { passive: true });
+        addEventListener('resize', setActive);
+      }
+    </script>
 
     <script>
       function updateLangButtons(lang: string) {
